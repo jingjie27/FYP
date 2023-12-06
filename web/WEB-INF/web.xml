@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         id="WebApp_ID" version="3.1">
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/Admin/404.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/Admin/500.jsp</location>
+    </error-page>
+
+	
+    <!-- Servlet definitions -->
+    <servlet>
+        <servlet-name>SvltMobileOrderingAPI</servlet-name>
+        <servlet-class>com.aurora.Servlet.API.Mobile.SvltMobileOrderingAPI</servlet-class>
+        <multipart-config>
+            <location>/tmp</location>
+            <max-file-size>10485760</max-file-size>
+            <max-request-size>104857600</max-request-size>
+            <file-size-threshold>104857600</file-size-threshold>
+        </multipart-config>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SvltMobileOrderingAPI</servlet-name>
+        <url-pattern>/API/mobile/*</url-pattern>
+    </servlet-mapping>
+	
+    <servlet>
+        <servlet-name>TokenServletAPI</servlet-name>
+        <servlet-class>com.aurora.Servlet.API.TokenServletAPI</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TokenServletAPI</servlet-name>
+        <url-pattern>/auth/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>SvltLoginAPI</servlet-name>
+        <servlet-class>com.aurora.Servlet.API.Web.SvltLoginAPI</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SvltLoginAPI</servlet-name>
+        <url-pattern>/API/Web/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>SvltGrpmstAPI</servlet-name>
+        <servlet-class>com.aurora.Servlet.API.Web.SvltGrpmstAPI</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SvltGrpmstAPI</servlet-name>
+        <url-pattern>/API/Web/grp/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>SvltItemmstAPI</servlet-name>
+        <servlet-class>com.aurora.Servlet.API.Web.SvltItemmstAPI</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SvltItemmstAPI</servlet-name>
+        <url-pattern>/API/Web/item/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>SvltOrderCnfrmtnAPI</servlet-name>
+        <servlet-class>com.aurora.Servlet.API.Web.SvltOrderCnfrmtnAPI</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SvltOrderCnfrmtnAPI</servlet-name>
+        <url-pattern>/API/Web/delv-order/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>SvltInitWebAPI</servlet-name>
+        <servlet-class>com.aurora.Servlet.API.Web.SvltInitWebAPI</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SvltInitWebAPI</servlet-name>
+        <url-pattern>/API/Web/init</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>TabletPOSAPI</servlet-name>
+        <servlet-class>com.aurora.Servlet.API.TPOS.SvltPOSTabletAPI</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TabletPOSAPI</servlet-name>
+        <url-pattern>/API/Tablet/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>SvltSupplmstAPI</servlet-name>
+        <servlet-class>com.aurora.Servlet.API.Web.SvltSupplmstAPI</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SvltSupplmstAPI</servlet-name>
+        <url-pattern>/API/Web/supplier/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>SvltReceivingAPI</servlet-name>
+        <servlet-class>com.aurora.Servlet.API.Web.Receiving.SvltReceivingAPI</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SvltReceivingAPI</servlet-name>
+        <url-pattern>/API/Web/receiving/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ControllerServlet</servlet-name>
+        <servlet-class>com.aurora.Servlet.ControllerServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ControllerServlet</servlet-name>
+        <url-pattern>/ProcessRoute</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>GroupLookup</servlet-name>
+        <servlet-class>com.aurora.Servlet.API.Web.LK.GroupLookup</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>GroupLookup</servlet-name>
+        <url-pattern>/group/lookup</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>SvltRouteControllerAPI</servlet-name>
+        <servlet-class>com.aurora.Servlet.API.Web.SvltRouteControllerAPI</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SvltRouteControllerAPI</servlet-name>
+        <url-pattern>/API/Web/route-controller/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>SvltUserAPI</servlet-name>
+        <servlet-class>com.aurora.Servlet.API.Web.SvltUserAPI</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SvltUserAPI</servlet-name>
+        <url-pattern>/API/Web/user/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>SvltCommonAPI</servlet-name>
+        <servlet-class>com.aurora.Servlet.API.SvltCommonAPI</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SvltCommonAPI</servlet-name>
+        <url-pattern>/API/common/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>IPay88Response</servlet-name>
+        <servlet-class>com.aurora.Servlet.PG.IPay88Response</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>IPay88beResponse</servlet-name>
+        <servlet-class>com.aurora.Servlet.PG.IPay88beResponse</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>IPay88Response</servlet-name>
+        <url-pattern>/payment/IPay88Response</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>IPay88beResponse</servlet-name>
+        <url-pattern>/payment/IPay88beResponse</url-pattern>
+    </servlet-mapping>
+
+
+</web-app>
