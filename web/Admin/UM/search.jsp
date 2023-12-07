@@ -1,7 +1,7 @@
 <%-- 
     Document   : UserManagementSearch
     Created on : 16 Nov 2023, 12:15:18 pm
-    Author     : chinwei
+    Author     : jingjie
 --%>
 <%@page import="com.aurora.Model.SearchObject"%>
 <%@page import="org.apache.commons.lang3.StringUtils" %>
@@ -42,7 +42,7 @@
     <%!
         private static final String SESSION_NAME = "userMngResult"; // item result set into the web session
         private static final String PAGE_TITLE = "User Management"; // Header Name for search
-        private static final String SEARCH_URL = "API/Web/um/search"; // refer to API Documentation
+        private static final String SEARCH_URL = "Aurora/API/Web/um/search"; // refer to API Documentation
         private static final String RESP_FIELD = "userMng"; // indicate where to find the data
 %>
     <%
@@ -223,10 +223,10 @@
                         baseUrl: '<%= (StringUtils.endsWith(WebMisc.getCoreIP(), "/") ? WebMisc.getCoreIP() : WebMisc.getCoreIP() + "/")%>',
                         authUrl: '<%= WebMisc.getCoreIP()%>',
                         accessID: '<%= SID%>',
-                        url: 'API/Web/UM/view', // API always using view as it grabs info only
+                        url: 'API/Web/um/view', // API always using view as it grabs info only
                         data: {
                             groupId: data[0],
-                            lastVersion: data[8]
+                            lastVersion: data[7]
                         },
                         authToken: true
                     }).then((response) => {
@@ -237,6 +237,9 @@
                             window.location.href = '<%= WebMisc.getCoreIP()%>/Admin/UM/editView.jsp?mode=' + mode
                         } else
                         {
+                                                  console.error('<%= WebMisc.getCoreIP()%>/Admin/UM/editView.jsp?mode=' + mode);
+
+
                             swal(
                                     {
                                         type: 'error',
@@ -252,11 +255,11 @@
                         baseUrl: '<%= (StringUtils.endsWith(WebMisc.getCoreIP(), "/") ? WebMisc.getCoreIP() : WebMisc.getCoreIP() + "/")%>',
                         authUrl: '<%= WebMisc.getCoreIP()%>',
                         accessID: '<%= SID%>',
-                        url: 'API/Web/UM/delete',
+                        url: 'API/Web/um/delete',
                         data: {
                             entity: [{
-                                    groupId: data[0],
-                                    lastVersion: data[8]
+                                    userID: data[0],
+                                    lastVersion: data[7]
                                 }]
                         },
                         authToken: true

@@ -21,7 +21,7 @@ import java.sql.Date;
 
 /**
  *
- * @author yeehao
+ * @author jinjie
  */
 public class UserMngResult extends GenericSearch {
 

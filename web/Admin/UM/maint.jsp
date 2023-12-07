@@ -412,7 +412,7 @@
                     "entity":
                             [
                                 {
-                                    "groupId": $("#groupId").val(),
+                                    "userID": $("#userID").val(),
                                     "groupName": $("#groupName").val(),
                                     "groupActiveCd": $("#groupActiveCd").val(),
                                     "userId": session.get("USR_ID", "")
@@ -424,7 +424,7 @@
                 console.log(data);
                 request.post({
                     baseUrl: '<%= WebMisc.getMasterIP()%>',
-                    url: '/API/Web/grp/create',
+                    url: 'API/Web/um/create',
                     data: data,
                     authUrl: "<%= WebMisc.getCoreIP()%>",
                     accessID: session.get("SID", ""),
@@ -436,7 +436,7 @@
                     {
                         console.log(response.data.token);
                         session.set("X-AUTH-TOKEN", response.data.token);
-                        window.location.href = '<%= WebMisc.getMasterIP()%>/Admin/MT/GRP/search.jsp?mode=success';
+                        window.location.href = '<%= WebMisc.getMasterIP()%>/Admin/UM/search.jsp?mode=success';
                     } else
                     {
                         console.log("Response is NULL!");

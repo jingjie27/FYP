@@ -1,7 +1,7 @@
 <%-- 
     Document   : UserManagement - editView
     Created on : 16 Nov 2023, 12:15:18 pm
-    Author     : chinwei
+    Author     : jingjie
 --%>
 
 <%@page import="java.util.Locale"%>
@@ -382,9 +382,10 @@
                     "entity":
                             [
                                 {
-                                    "groupId": $("#groupId").val(),
-                                    "groupName": $("#groupName").val(),
-                                    "groupActiveCd": $("#groupActiveCd").val(),
+                                    "userID": $("#userID").val(),
+                                    "password": $("#password").val(),
+                                    "firstName": $("#firstName").val(),
+				    "firstName": $("#firstName").val(),
                                     "userId": session.get("USR_ID", "")
                                 }
                             ]

@@ -1,19 +1,4 @@
-/*
- *                       Copyright (C) 2021, AURORA System
- *                              All rights reserved.
- * 
- *                           Code Owner : DING YING HONG
- * 
- *  This Code is solely used for AURORA System Only. Any of the source code cannot be copied and/or 
- *      distributed without writen and/or verbal notice from the code owner as mentioned above.
- * 
- *                           Proprietory and Confidential  
- * 
- *            @version OdrchklstResult.java 3 Nov 2023 yeehao
- *            @author  yeehao
- *            @since   3 Nov 2023
- * 
- */
+
 package com.aurora.API.Bean.Web;
 
 import com.aurora.API.Bean.BaseBean;
@@ -21,7 +6,7 @@ import java.util.List;
 
 /**
  *
- * @author yeehao
+ * @author jinjie
  */
 public class UserMngViewResult extends BaseBean {
 

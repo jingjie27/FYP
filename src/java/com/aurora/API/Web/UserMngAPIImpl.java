@@ -1,19 +1,4 @@
-/*
- *                       Copyright (C) 2021, AURORA System
- *                              All rights reserved.
- * 
- *                           Code Owner : DING YING HONG
- * 
- *  This Code is solely used for AURORA System Only. Any of the source code cannot be copied and/or 
- *      distributed without writen and/or verbal notice from the code owner as mentioned above.
- * 
- *                           Proprietory and Confidential  
- * 
- *            @version OdrchklstAPI.java 3 Nov 2023 yeehao
- *            @author  yeehao
- *            @since   3 Nov 2023
- * 
- */
+
 package com.aurora.API.Web;
 
 import com.aurora.API.Bean.EntityServiceBean;
@@ -356,7 +341,7 @@ public class UserMngAPIImpl extends GenericAPI implements UserMngAPI {
     private void updateUserMng(UserMngUpdateBean beanUserMng) throws Exception {
         posuserSQL = new PosuserSQL(conn);
         posuserSQL.setUSR_ID(beanUserMng.getUserID());
-        posuserSQL.setUSR_PSW(beanUserMng.getUserPsw());
+        posuserSQL.setUSR_PSW(EncryptorUtils.encrypt(beanUserMng.getUserPsw()));
         posuserSQL.setUSR_PIN(beanUserMng.getUserPin());
         posuserSQL.setFIRST_NAME(beanUserMng.getFirstName());
         posuserSQL.setLAST_NAME(beanUserMng.getLastName());
@@ -497,6 +482,7 @@ public class UserMngAPIImpl extends GenericAPI implements UserMngAPI {
 
             posuserSQL = new PosuserSQL(conn);
             posuserSQL.setUSR_ID(bean.getUserID());
+            posuserSQL.setUSR_ID(bean.getLastVersion());
 
             if (posuserSQL.getByKey() > 0) {
                 viewResult.setResultBean(setUserMngResultBean(posuserSQL));
@@ -527,10 +513,10 @@ public class UserMngAPIImpl extends GenericAPI implements UserMngAPI {
             errorFlag = true;
         }
 
-//        if (StringUtils.isBlank(viewBean.getLastVersion())) {
-//            messages.add(MessageHelper.getMessage(gnrlConn, "EMPTY_FIELD", "Last Version"));
-//            errorFlag = true;
-//        }
+        if (StringUtils.isBlank(viewBean.getLastVersion())) {
+            messages.add(MessageHelper.getMessage(gnrlConn, "EMPTY_FIELD", "Last Version"));
+            errorFlag = true;
+        }
         if (!errorFlag) {
 
             if (posuserSQL.getByKey() > 0) {

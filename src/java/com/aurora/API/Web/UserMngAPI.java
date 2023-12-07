@@ -28,10 +28,9 @@ import com.aurora.Servlet.API.AuthStatus;
 
 /**
  *
- * @author yeehao
+ * @author jinjie
  */
 public interface UserMngAPI {
-//
     ResultServiceBean<UserMngResult> create(EntityServiceBean<UserMngCreateBean> bean, AuthStatus authStatus);
     ResultServiceBean<UserMngResult> view(UserMngResult bean, AuthStatus authStatus);
     ResultServiceBean<UserMngPagination> search(UserMngSearchBean bean, AuthStatus authStatus);
