@@ -209,7 +209,6 @@
             });
             function maint(mode, data)
             {
-                console.log(mode);
                 session.set("USR_ID", "<%= request.getParameter("UID")%>");
                 session.set("SID", '<%= SID%>');
                 if (mode === 'new')
@@ -218,35 +217,34 @@
                 } else if ('view' === mode || 'edit' === mode)
                 {
                     $("#loader-modal").modal("show");
-
                     request.get({
-                        baseUrl: '<%= (StringUtils.endsWith(WebMisc.getCoreIP(), "/") ? WebMisc.getCoreIP() : WebMisc.getCoreIP() + "/")%>',
+                        baseUrl: '<%= (StringUtils.endsWith(WebMisc.getCoreIP(), "/") ? WebMisc.getCoreIP(): WebMisc.getCoreIP() + "/")%>',
                         authUrl: '<%= WebMisc.getCoreIP()%>',
                         accessID: '<%= SID%>',
                         url: 'API/Web/um/view', // API always using view as it grabs info only
                         data: {
-                            groupId: data[0],
-                            lastVersion: data[7]
+                                    userID: data[0],
+                                    lastVersion: data[7]
                         },
                         authToken: true
                     }).then((response) => {
-                        $("#loader-modal").modal("hide");
+                        setTimeout(function () {
+                            $("#loader-modal").modal("hide");
+                        }, 500)
+                        console.log(response);
                         if (response.status === 'ok')
                         {
-                            session.set("groupData", response.data);
+                            session.set("itemData", response.data);
                             window.location.href = '<%= WebMisc.getCoreIP()%>/Admin/UM/editView.jsp?mode=' + mode
                         } else
                         {
-                                                  console.error('<%= WebMisc.getCoreIP()%>/Admin/UM/editView.jsp?mode=' + mode);
-
-
                             swal(
                                     {
                                         type: 'error',
                                         title: 'Unexpected Error!',
                                         html: response.message
                                     }
-                            );
+                            )
                         }
                     });
                 } else if ('delete' === mode)

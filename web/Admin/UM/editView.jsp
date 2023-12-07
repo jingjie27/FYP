@@ -394,7 +394,7 @@
                 console.log("Data From Create Group Master Maintenance.");
                 console.log(data);
                 request.post({
-                    baseUrl: '<%= WebMisc.getCodeIP()%>',
+                    baseUrl: '<%= WebMisc.getCoreIP()%>',
                     url: '/API/Web/um/maint',
                     data: data,
                     authUrl: "<%= WebMisc.getCoreIP()%>",
@@ -407,7 +407,7 @@
                     {
                         console.log(response.data.token);
                         session.set("X-AUTH-TOKEN", response.data.token);
-                        window.location.href = '<%= WebMisc.getCodeIP()%>/Admin/UM/search.jsp?mode=success';
+                        window.location.href = '<%= WebMisc.getCoreIP()%>/Admin/UM/search.jsp?mode=success';
                     } else
                     {
                         console.log("Response is NULL!");
