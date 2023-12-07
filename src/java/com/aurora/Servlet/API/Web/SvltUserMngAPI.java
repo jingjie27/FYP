@@ -24,18 +24,10 @@ import com.aurora.API.Bean.EntityServiceBean;
 import com.aurora.API.Bean.ResultServiceBean;
 import com.aurora.API.Bean.Web.UserMngCreateBean;
 import com.aurora.API.Bean.Web.UserMngDeleteBean;
-//import com.aurora.API.Bean.Web.UserMngCreateBean;
-//import com.aurora.API.Bean.Web.UserMngDeleteBean;
 import com.aurora.API.Bean.Web.UserMngPagination;
 import com.aurora.API.Bean.Web.UserMngResult;
-//import com.aurora.API.Bean.Web.UserMngResult;
 import com.aurora.API.Bean.Web.UserMngSearchBean;
 import com.aurora.API.Bean.Web.UserMngUpdateBean;
-import com.aurora.API.Bean.Web.UserMngViewBean;
-import com.aurora.API.Bean.Web.UserMngViewResult;
-//import com.aurora.API.Bean.Web.UserMngUpdateBean;
-//import com.aurora.API.Bean.Web.UserMngViewBean;
-//import com.aurora.API.Bean.Web.UserMngViewResult;
 import com.aurora.API.Web.UserMngAPI;
 import com.aurora.API.Web.UserMngAPIImpl;
 import com.aurora.DataSource.SourceConnector;
@@ -51,7 +43,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 /**
  *
- * @author yeehao
+ * @author jinjie
  */
 public class SvltUserMngAPI extends APIServlet {
 
@@ -79,8 +71,8 @@ public class SvltUserMngAPI extends APIServlet {
         });
 
         try {
-            UserMngAPI pochklstService = new UserMngAPIImpl();
-            result = pochklstService.create(bean, getAuthStatus());
+            UserMngAPI userMngService = new UserMngAPIImpl();
+            result = userMngService.create(bean, getAuthStatus());
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -108,8 +100,8 @@ public class SvltUserMngAPI extends APIServlet {
         });
 
         try {
-            UserMngAPI odrchklstService = new UserMngAPIImpl();
-            result = odrchklstService.update(bean, getAuthStatus());
+            UserMngAPI userMngService = new UserMngAPIImpl();
+            result = userMngService.update(bean, getAuthStatus());
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -131,9 +123,9 @@ public class SvltUserMngAPI extends APIServlet {
                 .build();
     }
 
-    public ResponseInfo<UserMngViewResult> view(ServletAction servlet) throws Exception {
-        ResultServiceBean<UserMngViewResult> result = new ResultServiceBean<>();
-        UserMngViewResult odrchklstViewBean = new UserMngViewResult();
+    public ResponseInfo<UserMngResult> view(ServletAction servlet) throws Exception {
+        ResultServiceBean<UserMngResult> result = new ResultServiceBean<>();
+        UserMngResult odrchklstViewBean = new UserMngResult();
 
         try {
             String userID = servlet.request().getString("userID");
@@ -149,15 +141,15 @@ public class SvltUserMngAPI extends APIServlet {
         }
 
         if (ArrayUtils.isNotEmpty(result.getMessages())) {
-            return ResponseInfo.<UserMngViewResult>builder()
+            return ResponseInfo.<UserMngResult>builder()
                     .statusCode(StatusCode.ERROR)
                     .version(String.valueOf(MiscUtility.todayMillis()))
                     .globals(result.getMessages())
                     .build();
         }
 
-        UserMngViewResult resultBean = result.getResult();
-        return ResponseInfo.<UserMngViewResult>builder()
+        UserMngResult resultBean = result.getResult();
+        return ResponseInfo.<UserMngResult>builder()
                 .statusCode(StatusCode.OK)
                 .version(String.valueOf(MiscUtility.todayMillis()))
                 .entity(resultBean)
@@ -211,51 +203,6 @@ public class SvltUserMngAPI extends APIServlet {
                 .build();
     }
 
-//    public ResponseInfo<UserMngPagination> searchReleasePochklst(ServletAction servlet) throws Exception {
-//        ResultServiceBean<UserMngPagination> result = new ResultServiceBean<>();
-//        UserMngSearchBean odrchklstSearchBean = new UserMngSearchBean();
-//
-//        try {
-//            String store = servlet.request().getString("store");
-//            String chklstDate = servlet.request().getString("chklstDate");
-//            String buyer = servlet.request().getString("buyer");
-//            String delvLocation = servlet.request().getString("delvLocation");
-//            String expDelvDate = servlet.request().getString("expDelvDate");
-//            String remark = servlet.request().getString("remark");
-//            int currentPage = servlet.request().getInt("currentPage");
-//            int pageSize = servlet.request().getInt("pageSize");
-//
-//            odrchklstSearchBean.setStore(store);
-//            odrchklstSearchBean.setChklstDate(chklstDate);
-//            odrchklstSearchBean.setBuyer(buyer);
-//            odrchklstSearchBean.setDelvLocation(delvLocation);
-//            odrchklstSearchBean.setExpDelvDate(expDelvDate);
-//            odrchklstSearchBean.setRemark(remark);
-//            odrchklstSearchBean.setCurrentPage(currentPage);
-//            odrchklstSearchBean.setPageSize(pageSize);
-//
-//            UserMngAPI odrchklstAPI = new UserMngAPIImpl();
-//            result = odrchklstAPI.searchPochklstForRelease(odrchklstSearchBean, getAuthStatus());
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//
-//        if (ArrayUtils.isNotEmpty(result.getMessages())) {
-//            return ResponseInfo.<UserMngPagination>builder()
-//                    .statusCode(StatusCode.ERROR)
-//                    .version(String.valueOf(MiscUtility.todayMillis()))
-//                    .globals(result.getMessages())
-//                    .build();
-//        }
-//
-//        UserMngPagination resultBean = result.getResult();
-//        return ResponseInfo.<UserMngPagination>builder()
-//                .statusCode(StatusCode.OK)
-//                .version(String.valueOf(MiscUtility.todayMillis()))
-//                .entity(resultBean)
-//                .build();
-//    }
-//
     public ResponseInfo<Object> delete(ServletAction servlet) throws Exception {
 
         ResultServiceBean<UserMngResult> result = new ResultServiceBean<>();
@@ -263,8 +210,8 @@ public class SvltUserMngAPI extends APIServlet {
         });
 
         try {
-            UserMngAPI odrchklstService = new UserMngAPIImpl();
-            result = odrchklstService.delete(bean, getAuthStatus());
+            UserMngAPI userMngService = new UserMngAPIImpl();
+            result = userMngService.delete(bean, getAuthStatus());
 
         } catch (Exception ex) {
             ex.printStackTrace();
