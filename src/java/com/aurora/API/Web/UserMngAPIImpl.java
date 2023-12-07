@@ -19,6 +19,7 @@ package com.aurora.API.Web;
 import com.aurora.API.Bean.EntityServiceBean;
 import com.aurora.API.Bean.ResultServiceBean;
 import com.aurora.API.Bean.Web.UserMngCreateBean;
+import com.aurora.API.Bean.Web.UserMngDeleteBean;
 //import com.aurora.API.Bean.Web.UserMngCreateBean;
 //import com.aurora.API.Bean.Web.OdrchklstDeleteBean;
 //import com.aurora.API.Bean.Web.OdrchklstDetailsBean;
@@ -28,6 +29,8 @@ import com.aurora.API.Bean.Web.UserMngResult;
 //import com.aurora.API.Bean.Web.UserMngResult;
 import com.aurora.API.Bean.Web.UserMngSearchBean;
 import com.aurora.API.Bean.Web.UserMngSearchResult;
+import com.aurora.API.Bean.Web.UserMngUpdateBean;
+import com.aurora.API.Bean.Web.UserMngViewResult;
 //import com.aurora.API.Bean.Web.OdrchklstUpdateBean;
 //import com.aurora.API.Bean.Web.OdrchklstViewBean;
 //import com.aurora.API.Bean.Web.OdrchklstViewResult;
@@ -46,6 +49,7 @@ import com.aurora.Model.StoremstSQL;
 import com.aurora.Model.SupplcontractSQL;
 import com.aurora.Model.SupplmstSQL;
 import com.aurora.Servlet.API.AuthStatus;
+import com.aurora.Utility.EncryptorUtils;
 import com.aurora.Utility.HParam;
 import com.aurora.Utility.MessageHelper;
 import com.aurora.Utility.MiscUtility;
@@ -69,11 +73,15 @@ public class UserMngAPIImpl extends GenericAPI implements UserMngAPI {
     private List<String> messages = null;
     private boolean errorFlag = false;
 
-    private PosuserSQL posuserSQLSQL = null;
+    private PosuserSQL posuserSQL = null;
+    private ResultServiceBean<UserMngResult> itemResult = null;
 
     private ResultServiceBean<UserMngResult> createResult = null;
-//    private ResultServiceBean<OdrchklstViewResult> viewResult = null;
+    private ResultServiceBean<UserMngViewResult> viewResult = null;
     private ResultServiceBean<UserMngPagination> searchResult = null;
+    private ResultServiceBean<UserMngResult> updateResult = null;
+    private ResultServiceBean<UserMngResult> deleteResult = null;
+
 //    private ResultServiceBean<UserMngPagination> searchPochklstResult = null;
 //    private ResultServiceBean<UserMngResult> deleteResult = null;
 //    private ResultServiceBean<UserMngResult> updateResult = null;
@@ -96,14 +104,14 @@ public ResultServiceBean<UserMngResult> create(EntityServiceBean<UserMngCreateBe
             // Assuming UserMngCreateBean has appropriate getters for the data
             UserMngCreateBean userCreateBean = bean.getEntity().get(0);
 
-            posuserSQLSQL = new PosuserSQL(conn);
+            posuserSQL = new PosuserSQL(conn);
 
-            posuserSQLSQL.setUSR_ID(userCreateBean.getUserID());
-            posuserSQLSQL.setUSR_PSW(userCreateBean.getUserPsw());
-            posuserSQLSQL.setUSR_PIN(userCreateBean.getUserPin());
+            posuserSQL.setUSR_ID(userCreateBean.getUserID());
+            posuserSQL.setUSR_PSW(EncryptorUtils.encrypt(userCreateBean.getUserPsw()));
+            posuserSQL.setUSR_PIN(userCreateBean.getUserPin());
             // Set other properties accordingly
 
-            posuserSQLSQL.insert();
+            posuserSQL.insert();
 
             conn.commit();
         }
@@ -120,13 +128,6 @@ public ResultServiceBean<UserMngResult> create(EntityServiceBean<UserMngCreateBe
     return createResult;
 }
 
-
-    private void openDBConnection(HParam prop, String uId, boolean openMst, boolean openGnrl) throws Exception {
-        // Buying DB Connection refer back to the ofInstance() in the SvltOdrchklstAPI
-        conn = SourceConnector.openTenantConn(prop, false);
-
-        gnrlConn = SourceConnector.openTenantConn(uId, SourceConnector.PropKey.GENERAL_MODE, false);
-    }
     
     @Override
     public ResultServiceBean<UserMngPagination> search(UserMngSearchBean bean, AuthStatus authStatus) {
@@ -298,4 +299,235 @@ public ResultServiceBean<UserMngResult> create(EntityServiceBean<UserMngCreateBe
             gnrlConn = null;
         }
     }
+
+    @Override
+    public ResultServiceBean<UserMngResult> update(EntityServiceBean<UserMngUpdateBean> esb, AuthStatus as) {
+       UserMngResult resultBean = new UserMngResult();
+        messages = new ArrayList<>();
+        itemResult = new ResultServiceBean<>();
+        try {
+             conn = SourceConnector.openTenantConn(as.getConnectionProp(), false);
+            if (esb.getEntity().size() > 1) {
+                messages.add(MessageHelper.getMessage(conn, "NALLOW_MULTI_RECORDS"));
+                errorFlag = true;
+            }
+
+            if (errorFlag == false) {
+                for (UserMngUpdateBean beanItem : esb.getEntity()) {
+                    validateUpdate(beanItem);
+
+                    if (errorFlag == false) {
+                        updateItem(beanItem);
+                        resultBean = setItemResultBean(posuserSQL);
+                        itemResult.setResultBean(resultBean);
+
+                        conn.commit();
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            messages.add(ex.getMessage() == null ? ex.toString() : ex.getMessage().toString());
+
+            JdbcHelper.rollback(conn);
+        } finally {
+            closeConnection();
+        }
+        itemResult.setMessages(this.messages.toArray(new String[this.messages.size()]));
+        return itemResult;
+    }
+
+        private void updateItem(UserMngUpdateBean beanItem) throws Exception {
+        posuserSQL = new PosuserSQL(conn);
+        posuserSQL.setUSR_ID(beanItem.getUserID());
+        posuserSQL.setUSR_PSW(beanItem.getUserPsw());
+        posuserSQL.setUSR_PIN(beanItem.getUserPin());
+        posuserSQL.setFIRST_NAME(beanItem.getFirstName());
+        posuserSQL.setLAST_NAME(beanItem.getLastName());
+        posuserSQL.setUSR_EMAIL(beanItem.getEmail());
+        posuserSQL.setCONTACT(beanItem.getContactNumber());
+        posuserSQL.setALLOW_VOID(beanItem.getAllowVoid());
+        posuserSQL.setTITLE(beanItem.getTitle());
+        posuserSQL.setAUTHORIZATION(beanItem.getAuthorization());
+        posuserSQL.setCREATED_BY(beanItem.getCreateBy());
+        posuserSQL.setUSR_ACTIVE_CD(beanItem.getUserStatus());
+//        posuserSQL.setLAST_VERSION(beanItem.getLastVersion());
+        posuserSQL.setDATE_CREATED(MiscUtility.getSqlSysDate());
+        posuserSQL.setLAST_OPR(beanItem.getUserID());
+        posuserSQL.setLAST_OPR_FUNCT("UPDATE USER");
+        posuserSQL.update();
+    }
+    
+    private UserMngResult setItemResultBean(PosuserSQL itemmstSQL) throws Exception {
+        UserMngResult resultBean = new UserMngResult();
+
+        resultBean.setUserID(itemmstSQL.USR_ID());
+        resultBean.setUserPsw(itemmstSQL.USR_PSW());
+        resultBean.setUserPin(itemmstSQL.USR_PIN());
+        resultBean.setFirstName(itemmstSQL.FIRST_NAME());
+        resultBean.setLastName(itemmstSQL.LAST_NAME());
+        resultBean.setEmail(itemmstSQL.USR_EMAIL());
+        resultBean.setContactNumber(itemmstSQL.CONTACT());
+        resultBean.setAllowVoid(itemmstSQL.ALLOW_VOID());
+        resultBean.setTitle(itemmstSQL.TITLE());
+        resultBean.setAuthorization(itemmstSQL.AUTHORIZATION());
+        resultBean.setDateCreate(itemmstSQL.DATE_CREATED() == null ? "" : MiscUtility.parseDate(itemmstSQL.DATE_CREATED()));
+        resultBean.setCreateBy(itemmstSQL.CREATED_BY());
+        resultBean.setUserStatus(itemmstSQL.USR_ACTIVE_CD());
+        resultBean.setLastVersion(String.valueOf(itemmstSQL.LAST_VERSION()));
+
+        return resultBean;
+    }
+
+    
+        private void validateUpdate(UserMngUpdateBean beanItem) throws Exception {
+        if (org.apache.commons.lang.StringUtils.isBlank(beanItem.getUserID())) {
+            messages.add(MessageHelper.getMessage(conn, "EMPTY_FIELD", "User Id"));
+            errorFlag = true;
+        }
+
+        if (org.apache.commons.lang.StringUtils.isBlank(beanItem.getFirstName())) {
+            messages.add(MessageHelper.getMessage(conn, "EMPTY_FIELD", "First Name"));
+            errorFlag = true;
+        } 
+        verifyItem(beanItem.getUserID(), beanItem.getLastVersion());
+    }
+
+        
+        private void verifyItem(String item, String lastVersion) throws Exception {
+        if (org.apache.commons.lang.StringUtils.isBlank(item)) {
+            messages.add(MessageHelper.getMessage(conn, "EMPTY_FIELD", "User Id"));
+            errorFlag = true;
+        } 
+    }
+
+    
+    @Override
+    public ResultServiceBean<UserMngResult> delete(EntityServiceBean<UserMngDeleteBean> bean, AuthStatus authStatus) {
+        UserMngResult resultItem = null;
+        messages = new ArrayList<>();
+        deleteResult = new ResultServiceBean<>();
+        try {
+            conn = SourceConnector.openTenantConn(authStatus.getConnectionProp(), false);
+
+            for (UserMngDeleteBean beanItem : bean.getEntity()) {
+                validateDelete(beanItem);
+
+                if (!errorFlag) {
+                    resultItem = new UserMngResult();
+
+                    posuserSQL.setUSR_ACTIVE_CD("N");
+                    posuserSQL.update();
+
+                    posuserSQL.getByKey();
+
+                    resultItem.setUserID(posuserSQL.USR_ID());
+                    resultItem.setEmail(posuserSQL.USR_EMAIL());
+                    resultItem.setLastVersion(String.valueOf(posuserSQL.LAST_VERSION()));
+
+                    deleteResult.setResultBean(resultItem);
+
+                    conn.commit();
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            messages.add(ex.getMessage() == null ? ex.toString() : ex.getMessage().toString());
+            JdbcHelper.rollback(conn);
+
+        } finally {
+            JdbcHelper.close(conn);
+            conn = null;
+        }
+        deleteResult.setMessages(this.messages.toArray(new String[this.messages.size()]));
+
+        return deleteResult;
+    }
+    
+    
+    private void validateDelete(UserMngDeleteBean beanItem) throws Exception {
+        long lastVersion = 0L;
+        try {
+            lastVersion = Long.parseLong(beanItem.getLastVersion());
+        } catch (NumberFormatException ex) {
+            messages.add("Last Version must be numbers only");
+            errorFlag = true;
+        }
+
+        if (org.apache.commons.lang.StringUtils.isBlank(beanItem.getUserID())) {
+            messages.add(MessageHelper.getMessage(conn, MessageHelper.EMPTY_FIELD, "User Id"));
+            errorFlag = true;
+        } else {
+            if (posuserSQL == null) {
+                posuserSQL = new PosuserSQL(conn);
+            }
+
+            posuserSQL.setUSR_ID(beanItem.getUserID());
+
+            if (posuserSQL.getByKey() > 0) {
+                if (org.apache.commons.lang.StringUtils.equals("N", posuserSQL.USR_ACTIVE_CD())) {
+                    messages.add(MessageHelper.getMessage(conn, "INACTIVE", "Item"));
+                    errorFlag = true;
+                } else if (posuserSQL.LAST_VERSION() != lastVersion) {
+                    messages.add(MessageHelper.getMessage(conn, "RECORD_MODIFIED"));
+                    errorFlag = true;
+                }
+            }
+        }
+    }
+
+    @Override
+    public ResultServiceBean<UserMngViewResult> view(UserMngViewResult bean, AuthStatus authStatus) {
+        UserMngResult resultBean = new UserMngResult();
+        viewResult = new ResultServiceBean<>();
+        messages = new ArrayList<>();
+        try {
+             conn = SourceConnector.openTenantConn(authStatus.getConnectionProp(), false);
+            validateViewBean(bean);
+            
+            if (!errorFlag) {
+                resultBean = setItemResultBean(posuserSQL);
+                itemResult.setResultBean(resultBean);
+
+                conn.commit();
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            messages.add(ex.getMessage() == null ? ex.toString() : ex.getMessage());
+            JdbcHelper.rollback(conn);
+        } finally {
+            this.closeDBConnection();
+        }
+
+        viewResult.setMessages(this.messages.toArray(new String[this.messages.size()]));
+        return viewResult;
+    }
+    
+
+        private void validateViewBean(UserMngViewResult viewBean) throws Exception {
+        if (StringUtils.isBlank(viewBean.getLastVersion())) {
+            messages.add(MessageHelper.getMessage(gnrlConn, "EMPTY_FIELD", "Last Version"));
+            errorFlag = true;
+        }
+
+        if (StringUtils.isBlank(viewBean.getUserID())) {
+            messages.add(MessageHelper.getMessage(gnrlConn, "EMPTY_FIELD", "PO Checklist No"));
+            errorFlag = true;
+        }
+
+        if (!errorFlag) {
+            if (posuserSQL == null) {
+                posuserSQL = new PosuserSQL(conn);
+            }
+            posuserSQL.setUSR_ID(viewBean.getUserID());
+            if (posuserSQL.getByKey() > 0) {
+                if (Long.parseLong(viewBean.getLastVersion()) != posuserSQL.LAST_VERSION()) {
+                    messages.add(MessageHelper.getMessage(gnrlConn, "RECORD_MODIFIED"));
+                    errorFlag = true;
+                }
+            }
+        }
+    }
+
 }

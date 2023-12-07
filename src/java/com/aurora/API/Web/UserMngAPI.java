@@ -20,12 +20,15 @@ package com.aurora.API.Web;
 import com.aurora.API.Bean.EntityServiceBean;
 import com.aurora.API.Bean.ResultServiceBean;
 import com.aurora.API.Bean.Web.UserMngCreateBean;
+import com.aurora.API.Bean.Web.UserMngDeleteBean;
 //import com.aurora.API.Bean.Web.OdrchklstCreateBean;
 //import com.aurora.API.Bean.Web.OdrchklstDeleteBean;
 import com.aurora.API.Bean.Web.UserMngPagination;
 import com.aurora.API.Bean.Web.UserMngResult;
 //import com.aurora.API.Bean.Web.OdrchklstResult;
 import com.aurora.API.Bean.Web.UserMngSearchBean;
+import com.aurora.API.Bean.Web.UserMngUpdateBean;
+import com.aurora.API.Bean.Web.UserMngViewResult;
 //import com.aurora.API.Bean.Web.OdrchklstUpdateBean;
 //import com.aurora.API.Bean.Web.OdrchklstViewBean;
 //import com.aurora.API.Bean.Web.OdrchklstViewResult;
@@ -38,14 +41,8 @@ import com.aurora.Servlet.API.AuthStatus;
 public interface UserMngAPI {
 //
     ResultServiceBean<UserMngResult> create(EntityServiceBean<UserMngCreateBean> bean, AuthStatus authStatus);
-//
-//    ResultServiceBean<OdrchklstViewResult> view(OdrchklstViewBean bean, AuthStatus authStatus);
-
+    ResultServiceBean<UserMngViewResult> view(UserMngViewResult bean, AuthStatus authStatus);
     ResultServiceBean<UserMngPagination> search(UserMngSearchBean bean, AuthStatus authStatus);
-
-//    ResultServiceBean<OdrchklstResult> delete(EntityServiceBean<OdrchklstDeleteBean> bean, AuthStatus authStatus);
-//
-//    ResultServiceBean<OdrchklstResult> update(EntityServiceBean<OdrchklstUpdateBean> bean, AuthStatus authStatus);
-//
-//    ResultServiceBean<OdrchklstPagination> searchPochklstForRelease(OdrchklstSearchBean bean, AuthStatus authStatus);
+    ResultServiceBean<UserMngResult> delete(EntityServiceBean<UserMngDeleteBean> bean, AuthStatus authStatus);
+    ResultServiceBean<UserMngResult> update(EntityServiceBean<UserMngUpdateBean> bean, AuthStatus authStatus);
 }
