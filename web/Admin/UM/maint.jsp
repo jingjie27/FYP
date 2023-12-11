@@ -140,7 +140,7 @@
                                 <div class="col-md-6 col-sm-12">
                                     <div class="form-group">
                                         <label>Allow Void</label>
-                                        <select class="form-control" id="authorization" name="allowVoid" required>
+                                        <select class="form-control" id="allowVoid" name="allowVoid" required>
                                             <option value="Y">Yes</option>
                                             <option value="N">No</option>
                                         </select>
@@ -397,8 +397,8 @@
             $('#backBtn').click(function ()
             {
                 console.log("Triggered Back Button");
-                window.location.href = '<%= WebMisc.getCoreIP()%>/Admin/UM/search.jsp';
-//                history.back();
+//                window.location.href = '<%= WebMisc.getCoreIP()%>/Admin/UM/search.jsp';
+                history.back();
             });
             $('#saveBtn').click(function ()
             {
@@ -413,9 +413,18 @@
                             [
                                 {
                                     "userID": $("#userID").val(),
-                                    "groupName": $("#groupName").val(),
-                                    "groupActiveCd": $("#groupActiveCd").val(),
-                                    "userId": session.get("USR_ID", "")
+                                    "userPsw": $("#password").val(),
+                                    "userPin": $("#userPin").val(),
+                                    "firstName": $("#firstName").val(),
+                                    "lastName": $("#lastName").val(),
+                                    "email": $("#email").val(),
+                                    "allowVoid": $("#allowVoid").val(),
+                                    "title": $("#title").val(),
+                                    "authorization": $("#authorization").val(),
+                                    "dateCreate": $("#dateCreate").val(),
+                                    "createBy": $("#createBy").val(),
+                                    "userStatus": $("#userActive").val(),
+                                    "contactNumber": $("#contactNumber").val(),
                                 }
                             ]
 
@@ -423,7 +432,7 @@
                 console.log("Data From Create Group Master Maintenance.");
                 console.log(data);
                 request.post({
-                    baseUrl: '<%= WebMisc.getMasterIP()%>',
+                    baseUrl: '<%= WebMisc.getCoreIP()%>',
                     url: 'API/Web/um/create',
                     data: data,
                     authUrl: "<%= WebMisc.getCoreIP()%>",
@@ -436,7 +445,8 @@
                     {
                         console.log(response.data.token);
                         session.set("X-AUTH-TOKEN", response.data.token);
-                        window.location.href = '<%= WebMisc.getMasterIP()%>/Admin/UM/search.jsp?mode=success';
+//                        window.location.href = '<%= WebMisc.getCoreIP()%>/Admin/UM/search.jsp?mode=success';
+                           history.back();
                     } else
                     {
                         console.log("Response is NULL!");

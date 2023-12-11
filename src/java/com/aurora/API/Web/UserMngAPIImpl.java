@@ -1,4 +1,3 @@
-
 package com.aurora.API.Web;
 
 import com.aurora.API.Bean.EntityServiceBean;
@@ -61,7 +60,7 @@ public class UserMngAPIImpl extends GenericAPI implements UserMngAPI {
 
             if (errorFlag == false) {
                 for (UserMngCreateBean beanUserMng : bean.getEntity()) {
-                     validateCreate(beanUserMng);
+                    validateCreate(beanUserMng);
 
                     if (errorFlag == false) {
                         createUserMng(beanUserMng);
@@ -341,7 +340,18 @@ public class UserMngAPIImpl extends GenericAPI implements UserMngAPI {
     private void updateUserMng(UserMngUpdateBean beanUserMng) throws Exception {
         posuserSQL = new PosuserSQL(conn);
         posuserSQL.setUSR_ID(beanUserMng.getUserID());
-        posuserSQL.setUSR_PSW(EncryptorUtils.encrypt(beanUserMng.getUserPsw()));
+
+    if (posuserSQL.getByKey() > 0) {
+        String existingPassword = posuserSQL.USR_PSW();
+        String newPassword = beanUserMng.getUserPsw();
+
+        if (!newPassword.isEmpty() ) {
+            posuserSQL.setUSR_PSW(EncryptorUtils.encrypt(newPassword));
+        } else {
+            posuserSQL.setUSR_PSW(existingPassword);
+        }
+    }    
+
         posuserSQL.setUSR_PIN(beanUserMng.getUserPin());
         posuserSQL.setFIRST_NAME(beanUserMng.getFirstName());
         posuserSQL.setLAST_NAME(beanUserMng.getLastName());
@@ -475,17 +485,21 @@ public class UserMngAPIImpl extends GenericAPI implements UserMngAPI {
     @Override
     public ResultServiceBean<UserMngResult> view(UserMngResult bean, AuthStatus authStatus) {
         messages = new ArrayList<>();
-        viewResult = new ResultServiceBean<>(); 
+        viewResult = new ResultServiceBean<>();
 
         try {
             conn = SourceConnector.openTenantConn(authStatus.getConnectionProp(), false);
-
-            posuserSQL = new PosuserSQL(conn);
+            validateViewBean(bean);
             posuserSQL.setUSR_ID(bean.getUserID());
-            posuserSQL.setUSR_ID(bean.getLastVersion());
+            posuserSQL.setLAST_VERSION(Long.parseLong(bean.getLastVersion()));
 
             if (posuserSQL.getByKey() > 0) {
-                viewResult.setResultBean(setUserMngResultBean(posuserSQL));
+                UserMngResult userMngResult = setUserMngResultBean(posuserSQL);
+
+                String decryptedPassword = EncryptorUtils.decrypt(posuserSQL.USR_PSW());
+                userMngResult.setUserPsw(decryptedPassword);
+
+                viewResult.setResultBean(userMngResult);
             } else {
                 messages.add(MessageHelper.getMessage(conn, "RECORD_NOT_FOUND"));
                 errorFlag = true;
@@ -520,10 +534,10 @@ public class UserMngAPIImpl extends GenericAPI implements UserMngAPI {
         if (!errorFlag) {
 
             if (posuserSQL.getByKey() > 0) {
-//                if (Long.parseLong(viewBean.getLastVersion()) != posuserSQL.LAST_VERSION()) {
-//                    messages.add(MessageHelper.getMessage(gnrlConn, "Last Version Not Match"));
-//                    errorFlag = true;
-//                }
+                if (Long.parseLong(viewBean.getLastVersion()) != posuserSQL.LAST_VERSION()) {
+                    messages.add(MessageHelper.getMessage(gnrlConn, "Last Version Not Match"));
+                    errorFlag = true;
+                }
             }
         }
     }

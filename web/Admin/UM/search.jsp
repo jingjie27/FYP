@@ -40,7 +40,7 @@
     </head>
 
     <%!
-        private static final String SESSION_NAME = "userMngResult"; // item result set into the web session
+        private static final String SESSION_NAME = "userMngResult"; // userMng result set into the web session
         private static final String PAGE_TITLE = "User Management"; // Header Name for search
         private static final String SEARCH_URL = "Aurora/API/Web/um/search"; // refer to API Documentation
         private static final String RESP_FIELD = "userMng"; // indicate where to find the data
@@ -188,7 +188,6 @@
 
                     }
 
-
                     ]}"
                 json="<%= data%>"
                     className="com.aurora.API.Bean.Web.UserMngSearchResult"
@@ -223,8 +222,8 @@
                         accessID: '<%= SID%>',
                         url: 'API/Web/um/view', // API always using view as it grabs info only
                         data: {
-                                    userID: data[0],
-                                    lastVersion: data[7]
+                              userID: data[0],
+                              lastVersion: data[7]
                         },
                         authToken: true
                     }).then((response) => {
@@ -234,7 +233,7 @@
                         console.log(response);
                         if (response.status === 'ok')
                         {
-                            session.set("itemData", response.data);
+                            session.set("userMngData", response.data);
                             window.location.href = '<%= WebMisc.getCoreIP()%>/Admin/UM/editView.jsp?mode=' + mode
                         } else
                         {
@@ -285,7 +284,6 @@
                         }
                     });
                 }
-
             }
         </script>
 

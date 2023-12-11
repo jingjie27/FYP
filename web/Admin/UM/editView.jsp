@@ -95,7 +95,7 @@
                                 <div class="col-md-6 col-sm-12">
                                     <div class="form-group">
                                         <label>User ID</label>
-                                        <input id="userID" type="text" class="form-control" required>
+                                        <input id="userID" type="text" class="form-control" disabled="">
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-sm-12">
@@ -132,7 +132,7 @@
                                 <div class="col-md-6 col-sm-12">
                                     <div class="form-group">
                                         <label>Allow Void</label>
-                                        <select class="form-control" id="authorization" name="allowVoid" required>
+                                        <select class="form-control" id="allowVoid" name="allowVoid" required>
                                             <option value="Y">Yes</option>
                                             <option value="N">No</option>
                                         </select>
@@ -202,33 +202,72 @@
             </div>
         </div>
 
-    <modal:loader
-        clazz="modal fade"
-        aria_labelledby="loaderModal"
-        message="Please wait for a moment..."
-    path="<%= WebMisc.getCoreIP()%>"
-        />
-    <script src="<%= WebMisc.getCoreIP()%>/Admin/vendors/scripts/core.js"></script>
-    <script src="<%= WebMisc.getCoreIP()%>/Admin/vendors/scripts/script.min.js"></script>
-    <script src="<%= WebMisc.getCoreIP()%>/Admin/vendors/scripts/process.js"></script>
-    <script src="<%= WebMisc.getCoreIP()%>/Admin/vendors/scripts/layout-settings.js"></script>
-    <script src="<%= WebMisc.getCoreIP()%>/Admin/scripts/core_scripts.js"></script>
-    <script src="<%= WebMisc.getCoreIP()%>/Admin/src/plugins/datatables/js/jquery.dataTables.min.js"></script>
-    <script src="<%= WebMisc.getCoreIP()%>/Admin/src/plugins/datatables/js/dataTables.bootstrap4.min.js"></script>
-    <script src="<%= WebMisc.getCoreIP()%>/Admin/src/plugins/datatables/js/dataTables.responsive.min.js"></script>
-    <script src="<%= WebMisc.getCoreIP()%>/Admin/src/plugins/datatables/js/responsive.bootstrap4.min.js"></script>
-    <script src="<%= WebMisc.getCoreIP()%>/Admin/vendors/scripts/datatable-setting.js"></script>
-    <!-- Switchery -->
-    <script src="<%= WebMisc.getCoreIP()%>/Admin/src/plugins/switchery/switchery.min.js"></script>
-    <!-- TouchSpin -->
-    <script src="<%= WebMisc.getCoreIP()%>/Admin/src/plugins/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
-    <script src="<%= WebMisc.getCoreIP()%>/Admin/vendors/scripts/advanced-components.js"></script>
+        <modal:loader
+            clazz="modal fade"
+            aria_labelledby="loaderModal"
+            message="Please wait for a moment..."
+        path="<%= WebMisc.getCoreIP()%>"
+            />
+        <script src="<%= WebMisc.getCoreIP()%>/Admin/vendors/scripts/core.js"></script>
+        <script src="<%= WebMisc.getCoreIP()%>/Admin/vendors/scripts/script.min.js"></script>
+        <script src="<%= WebMisc.getCoreIP()%>/Admin/vendors/scripts/process.js"></script>
+        <script src="<%= WebMisc.getCoreIP()%>/Admin/vendors/scripts/layout-settings.js"></script>
+        <script src="<%= WebMisc.getCoreIP()%>/Admin/scripts/core_scripts.js"></script>
+        <script src="<%= WebMisc.getCoreIP()%>/Admin/src/plugins/datatables/js/jquery.dataTables.min.js"></script>
+        <script src="<%= WebMisc.getCoreIP()%>/Admin/src/plugins/datatables/js/dataTables.bootstrap4.min.js"></script>
+        <script src="<%= WebMisc.getCoreIP()%>/Admin/src/plugins/datatables/js/dataTables.responsive.min.js"></script>
+        <script src="<%= WebMisc.getCoreIP()%>/Admin/src/plugins/datatables/js/responsive.bootstrap4.min.js"></script>
+        <script src="<%= WebMisc.getCoreIP()%>/Admin/vendors/scripts/datatable-setting.js"></script>
+        <!-- Switchery -->
+        <script src="<%= WebMisc.getCoreIP()%>/Admin/src/plugins/switchery/switchery.min.js"></script>
+        <!-- TouchSpin -->
+        <script src="<%= WebMisc.getCoreIP()%>/Admin/src/plugins/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
+        <script src="<%= WebMisc.getCoreIP()%>/Admin/vendors/scripts/advanced-components.js"></script>
 
 
 
-    <script>
-(document).ready(function ()
+        <script>
+
+
+        function populateData(userData) {
+            $("#userID").val(userData.userID);
+            $("#firstName").val(userData.firstName);
+            $("#lastName").val(userData.lastName);
+            $("#password").val(userData.userPsw);
+            $("#email").val(userData.email);
+            $("#contactNumber").val(userData.contactNumber);
+            $("#title").val(userData.title);
+            $("#createBy").val(userData.createBy);
+            $("#dateCreate").val(userData.dateCreate);
+            $("#userActive").val(userData.userStatus);
+            $("#allowVoid").val(userData.allowVoid);
+            $("#authorization").val(userData.authorization);
+
+            console.log("Populated Data:");
+            console.log(userData);
+        }
+
+        var data = session.get("userMngData", null);
+
+        if (data !== null) {
+            populateData(data);
+        } else {
+            console.error("Session data is null or in an unexpected format.");
+        }
+
+
+        $(document).ready(function ()
         {
+
+            var data = session.get("userMngData", null);
+            if (data !== null) {
+                populateData(data);
+            } else {
+                console.error("Session data is null or in an unexpected format.");
+            }
+
+
+
             $('#createBy').val(session.get("UID"));
             $(".activate").val(today());
             $('#dateCreate').text(today());
@@ -257,6 +296,15 @@
                     $("#contactNumberAlert").text("");
                     $("#contactNumberAlert").hide();
                 }
+
+
+//                if ("<%= request.getParameter("mode") != null && request.getParameter("mode").equalsIgnoreCase("view")%>") {
+//                    $("input, select").prop("disabled", true);
+//                    $("#saveBtn").hide();
+//                } else {
+//                    console.log("<%= request.getParameter("mode")%>");
+//                }
+
             });
 
             // Additional validation when the input loses focus
@@ -370,32 +418,47 @@
             $('#backBtn').click(function ()
             {
                 console.log("Triggered Back Button");
-                window.location.href = '<%= WebMisc.getCoreIP()%>/Admin/UM/search.jsp';
-//                history.back();
+//                window.location.href = '<%= WebMisc.getCoreIP()%>/Admin/UM/search.jsp';
+                history.back();
             });
 
             $('#saveBtn').click(function ()
             {
-                console.log("'Test Create Button");
+                var sessionData = session.get("userMngData", null);
+
+//     var newPassword = document.getElementById("password");
+//        if (newPassword && newPassword.value) {
+//          sessionData.userPsw = newPassword.value;
+//        }
+
+                console.log(password);
                 $("#loader-modal").modal("show");
                 var data = {
-                    "entity":
-                            [
-                                {
-                                    "userID": $("#userID").val(),
-                                    "password": $("#password").val(),
-                                    "firstName": $("#firstName").val(),
-				    "firstName": $("#firstName").val(),
-                                    "userId": session.get("USR_ID", "")
-                                }
-                            ]
-
+                    "entity": [
+                        {
+                            "userID": sessionData.userID,
+                            "userPsw": $("#password").val(),
+                            "userPin": sessionData.userPin,
+                            "firstName": $("#firstName").val(),
+                            "lastName": $("#lastName").val(),
+                            "email": $("#email").val(),
+                            "allowVoid": $("#allowVoid").val(),
+                            "title": $("#title").val(),
+                            "authorization": $("#authorization").val(),
+                            "dateCreate": sessionData.dateCreate,
+                            "createBy": sessionData.createBy,
+                            "userStatus": $("#userActive").val(),
+                            "contactNumber": $("#contactNumber").val(),
+                            "lastVersion": sessionData.lastVersion
+                        }
+                    ]
                 };
+
                 console.log("Data From Create Group Master Maintenance.");
                 console.log(data);
                 request.post({
                     baseUrl: '<%= WebMisc.getCoreIP()%>',
-                    url: '/API/Web/um/maint',
+                    url: '/API/Web/um/update',
                     data: data,
                     authUrl: "<%= WebMisc.getCoreIP()%>",
                     accessID: session.get("SID", ""),
@@ -407,7 +470,7 @@
                     {
                         console.log(response.data.token);
                         session.set("X-AUTH-TOKEN", response.data.token);
-                        window.location.href = '<%= WebMisc.getCoreIP()%>/Admin/UM/search.jsp?mode=success';
+                        history.back();
                     } else
                     {
                         console.log("Response is NULL!");
@@ -424,6 +487,6 @@
             });
         }
         );
-        
+
         </script>
 </body>

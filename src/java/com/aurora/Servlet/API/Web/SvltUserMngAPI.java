@@ -125,17 +125,17 @@ public class SvltUserMngAPI extends APIServlet {
 
     public ResponseInfo<UserMngResult> view(ServletAction servlet) throws Exception {
         ResultServiceBean<UserMngResult> result = new ResultServiceBean<>();
-        UserMngResult odrchklstViewBean = new UserMngResult();
+        UserMngResult userMngViewBean = new UserMngResult();
 
         try {
             String userID = servlet.request().getString("userID");
             String lastVersion = servlet.request().getString("lastVersion");
 
-            odrchklstViewBean.setUserID(userID);
-            odrchklstViewBean.setLastVersion(lastVersion);
+            userMngViewBean.setUserID(userID);
+            userMngViewBean.setLastVersion(lastVersion);
 
-            UserMngAPI odrchklstAPI = new UserMngAPIImpl();
-            result = odrchklstAPI.view(odrchklstViewBean, getAuthStatus());
+            UserMngAPI userMngAPI = new UserMngAPIImpl();
+            result = userMngAPI.view(userMngViewBean, getAuthStatus());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
